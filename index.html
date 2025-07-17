@@ -15,6 +15,7 @@
       align-items: center;
       height: 100vh;
       text-align: center;
+      position: relative;
     }
     .container {
       width: 80%;
@@ -23,6 +24,8 @@
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 2;
     }
     h1 {
       color: #2b2b2b;
@@ -54,20 +57,33 @@
     button:hover {
       background-color: #c94c56;
     }
+    /* Estilos para o iframe da música */
+    iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* coloca o iframe atrás do conteúdo */
+      opacity: 0.3; /* deixa o áudio suave ao fundo */
+    }
   </style>
 </head>
 <body>
 
+  <!-- Música de fundo (Flamingos) do YouTube -->
+  <iframe src="https://www.youtube.com/embed/Hzl8S4EXF4I?autoplay=1&loop=1&playlist=Hzl8S4EXF4I" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
   <div class="container">
-    <h1>Carta de Amor para Kimberlly</h1>
+    <h1>Carta de Amor para minha princesa</h1>
     
-    <p>Kimberlly, minha linda...</p>
+    <p>Amor, a pessoa mais linda desse universo...</p>
     
     <p class="reveal" onclick="revealText()">Clique aqui para descobrir o que eu sinto por você.</p>
-    <p class="hidden" id="text1">Cada vez que eu olho para você, meu coração bate mais forte. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.</p>
+    <p class="hidden" id="text1">Cada vez que eu olho para você, meu coração bate mais forte e eu sinto uma enorme felicidade. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.</p>
     
     <p class="reveal" onclick="revealText2()">Agora clique para saber o que mais sinto.</p>
-    <p class="hidden" id="text2">Teus olhos brilham mais que uma supernova. Eu não consigo descrever o quão especiais você é para mim. Você é meu amor eterno.</p>
+    <p class="hidden" id="text2">Teus olhos brilham mais que uma explosão de supernova. Eu não consigo descrever o quão especial você é para mim. Você é meu amor eterno.</p>
     
     <button onclick="finalMessage()">Ver surpresa final</button>
   </div>
@@ -82,7 +98,7 @@
     }
 
     function finalMessage() {
-      alert("Eu te amo, Kimberlly. Feliz aniversário! 💖");
+      alert("Eu te amo princesa. Feliz aniversário! 💖");
     }
   </script>
 
