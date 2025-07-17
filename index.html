@@ -136,21 +136,6 @@
       background-color: #c94c56;
     }
     
-    /* Shake effect */
-    .shake-instruction {
-      background-color: #2a2b35;
-      border: 2px dashed #e35d6a;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 20px 0;
-      text-align: center;
-      animation: breathe 2s ease-in-out infinite;
-    }
-    @keyframes breathe {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-    }
-    
     /* Voice recognition */
     .voice-section {
       background-color: #2a2b35;
@@ -380,17 +365,11 @@
       <p id="text1" class="hidden typewriter-text"></p>
     </div>
 
-    <!-- Página 2: Shake para corações -->
+    <!-- Página 2: Mensagem especial -->
     <div class="page" id="page2">
       <h2>Momento Especial 💕</h2>
       <p class="reveal" onclick="typeWriterEffect('text2')">E não só isso. (clique aqui)</p>
       <p id="text2" class="hidden typewriter-text"></p>
-      
-      <div class="shake-instruction">
-        <h3>📱 Balançe seu celular! 📱</h3>
-        <p>Agite suavemente para soltar corações especiais!</p>
-        <div id="shakeStatus" style="color: #e35d6a; font-weight: bold;">Aguardando movimento...</div>
-      </div>
     </div>
 
     <!-- Página 3: Reconhecimento de voz -->
@@ -404,7 +383,15 @@
       </div>
       
       <div id="voiceSuccess" style="display:none; color: #e35d6a; font-size: 18px; margin-top: 20px;">
-        ✨ Sua voz é perfeita! Meu coração está acelerado! ✨
+        <p>✨ Sua voz é perfeita, é sério, escuta só 🥰❤️ ✨</p>
+        <div id="recordedAudio" style="margin-top: 20px; background-color: #2a2b35; padding: 20px; border-radius: 10px; border: 2px solid #e35d6a;">
+          <iframe
+            src="https://vocaroo.com/embed/1gZul3j0FpEA?autoplay=0"
+            allow="autoplay"
+            title="Sua voz gravada"
+            style="border-radius: 8px; box-shadow: 0 0 10px #e35d6a; width: 100%; max-width: 300px; height: 60px; border: none;"
+          ></iframe>
+        </div>
       </div>
     </div>
 
@@ -453,6 +440,7 @@
   const envelope = document.getElementById("envelope");
 
   let currentPage = 0;
+  let specialHeartsShown = false;
   const totalPages = 4;
 
   const texts = {
@@ -467,11 +455,6 @@
     
     document.getElementById(`page${pageIndex + 1}`).classList.add('active');
     document.querySelectorAll('.page-dot')[pageIndex].classList.add('active');
-    
-    // Vibração suave ao trocar página
-    if (navigator.vibrate) {
-      navigator.vibrate(50);
-    }
     
     // Atualiza botões de navegação
     document.getElementById('prevBtn').disabled = pageIndex === 0;
@@ -519,11 +502,6 @@
         setTimeout(() => {
           el.style.borderRight = "none";
         }, 1000);
-        
-        // Vibração ao terminar de escrever
-        if (navigator.vibrate) {
-          navigator.vibrate([100, 50, 100]);
-        }
       }
     }
     type();
@@ -542,11 +520,6 @@
     envelope.querySelector("span").style.display = "none";
     const content = document.getElementById("envelopeContent");
     content.style.display = "block";
-
-    // Vibração ao abrir envelope
-    if (navigator.vibrate) {
-      navigator.vibrate([200, 100, 200]);
-    }
 
     setTimeout(() => {
       startScreen.style.display = "none";
@@ -570,48 +543,6 @@
     }
   }
 
-  // Shake detection
-  let shakeThreshold = 15;
-  let lastShake = 0;
-  
-  function handleShake() {
-    const now = Date.now();
-    if (now - lastShake > 1000) { // Evita spam
-      lastShake = now;
-      
-      // Vibração no shake
-      if (navigator.vibrate) {
-        navigator.vibrate(200);
-      }
-      
-      // Cria vários corações
-      for (let i = 0; i < 20; i++) {
-        setTimeout(() => createSpecialHeart(), i * 100);
-      }
-      
-      document.getElementById('shakeStatus').textContent = '💕 Que lindo! Mais corações para você! 💕';
-      setTimeout(() => {
-        document.getElementById('shakeStatus').textContent = 'Aguardando movimento...';
-      }, 3000);
-    }
-  }
-
-  // Detecta movimento do dispositivo
-  if (window.DeviceMotionEvent) {
-    window.addEventListener('devicemotion', function(event) {
-      const acceleration = event.accelerationIncludingGravity;
-      const x = acceleration.x;
-      const y = acceleration.y;
-      const z = acceleration.z;
-      
-      const accelerationMagnitude = Math.sqrt(x*x + y*y + z*z);
-      
-      if (accelerationMagnitude > shakeThreshold) {
-        handleShake();
-      }
-    });
-  }
-
   // Reconhecimento de voz
   function startVoiceRecognition() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -628,10 +559,6 @@
 
     recognition.onstart = function() {
       document.getElementById('voiceStatus').textContent = '🎤 Ouvindo... Diga "Eu te amo"';
-      // Vibração ao iniciar
-      if (navigator.vibrate) {
-        navigator.vibrate(100);
-      }
     };
 
     recognition.onresult = function(event) {
@@ -640,14 +567,10 @@
         document.getElementById('voiceSuccess').style.display = 'block';
         document.getElementById('voiceStatus').textContent = '✨ Perfeito! Eu também te amo! ✨';
         
-        // Vibração de sucesso
-        if (navigator.vibrate) {
-          navigator.vibrate([100, 50, 100, 50, 100]);
-        }
-        
-        // Chuva de corações
-        for (let i = 0; i < 30; i++) {
-          setTimeout(() => createSpecialHeart(), i * 50);
+        // Cria apenas 30 corações especiais uma vez
+        if (!specialHeartsShown) {
+          specialHeartsShown = true;
+          createSpecialHearts();
         }
       } else {
         document.getElementById('voiceStatus').textContent = 'Tente dizer "Eu te amo" mais claramente 💕';
@@ -661,21 +584,25 @@
     recognition.start();
   }
 
-  // Corações especiais para shake e voz
-  function createSpecialHeart() {
+  // Cria 30 corações especiais apenas uma vez
+  function createSpecialHearts() {
     const heartsContainer = document.getElementById("hearts");
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = 3 + Math.random() * 3 + "s";
-    heart.style.opacity = 0.8 + Math.random() * 0.2;
-    heart.style.transform = `scale(${1 + Math.random() * 1.5}) rotate(45deg)`;
-    heart.style.background = `hsl(${Math.random() * 60 + 330}, 70%, 60%)`; // Tons de rosa/vermelho
-    heartsContainer.appendChild(heart);
-    setTimeout(() => heart.remove(), 6000);
+    for (let i = 0; i < 30; i++) {
+      setTimeout(() => {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = 3 + Math.random() * 3 + "s";
+        heart.style.opacity = 0.8 + Math.random() * 0.2;
+        heart.style.transform = `scale(${1 + Math.random() * 1.5}) rotate(45deg)`;
+        heart.style.background = `hsl(${Math.random() * 60 + 330}, 70%, 60%)`; // Tons de rosa/vermelho
+        heartsContainer.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }, i * 100);
+    }
   }
 
-  // Balões de coração normais
+  // Balões de coração normais de fundo
   function createHearts() {
     const heartsContainer = document.getElementById("hearts");
     setInterval(() => {
@@ -704,12 +631,6 @@
     function showNextMessage() {
       if (currentMessage < messages.length) {
         alert(messages[currentMessage]);
-        
-        // Vibração para cada mensagem
-        if (navigator.vibrate) {
-          navigator.vibrate([200, 100, 200]);
-        }
-        
         currentMessage++;
         setTimeout(showNextMessage, 800);
       } else {
@@ -735,11 +656,6 @@
         heartsContainer.appendChild(heart);
         setTimeout(() => heart.remove(), 6000);
       }, i * 100);
-    }
-    
-    // Vibração final épica
-    if (navigator.vibrate) {
-      navigator.vibrate([300, 100, 300, 100, 300]);
     }
   }
 
