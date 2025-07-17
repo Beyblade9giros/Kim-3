@@ -192,17 +192,7 @@
       border: none;
       margin-top: 10px;
     }
-    .audio-instruction {
-      color: #e35d6a;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #e35d6a; }
-      to { text-shadow: 0 0 20px #e35d6a, 0 0 30px #e35d6a; }
-    }
+
     .audio-hint {
       color: #fff;
       font-size: 14px;
@@ -275,22 +265,21 @@
     <p class="reveal" onclick="typeWriterEffect('text2')">E não só isso. (clique aqui)</p>
     <p id="text2" class="hidden typewriter-text"></p>
 
-    <button onclick="finalMessage()">Ver surpresa final</button>
-
     <div id="musicControl" style="margin-top: 15px;">
       <button onclick="toggleMusic()" id="musicBtn">⏸ Pausar música</button>
     </div>
 
     <!-- Player áudio mensagem sua -->
     <div id="audioMessage">
-      <div class="audio-instruction">🎧 Toque aqui para ouvir uma mensagem especial! 🎧</div>
-      <div class="audio-hint">👆 Clique no play para ouvir minha voz</div>
+      <div class="audio-hint">👇 Clique no play para ouvir minha voz</div>
       <iframe
         src="https://vocaroo.com/embed/1gZul3j0FpEA?autoplay=0"
         allow="autoplay"
         title="Mensagem de voz"
       ></iframe>
     </div>
+
+    <button onclick="finalMessage()">Ver surpresa final</button>
   </div>
 
 <script>
@@ -337,8 +326,14 @@
 
   // Envelope abrindo com transição e mostra conteúdo + inicia música
   function openEnvelope() {
-    // Toca o som de carta abrindo
+    // Toca o som de carta abrindo (do segundo 2 ao 6)
+    envelopeSound.currentTime = 2; // Começa no segundo 2
     envelopeSound.play().catch(e => console.log("Erro ao tocar som:", e));
+    
+    // Para o som no segundo 6
+    setTimeout(() => {
+      envelopeSound.pause();
+    }, 4000); // 4 segundos (do segundo 2 ao 6)
     
     envelope.classList.add("open");
     envelope.querySelector("span").style.display = "none";
@@ -350,6 +345,7 @@
       startScreen.style.display = "none";
       mainContent.style.display = "block";
       createHearts();
+      audio.volume = 0.3; // Define volume da música de fundo para 30%
       audio.play().catch(() => {
         // autoplay pode falhar se sem interação no navegador
         musicBtn.textContent = "⏵ Tocar música";
@@ -359,6 +355,7 @@
 
   function toggleMusic() {
     if (audio.paused) {
+      audio.volume = 0.3; // Mantém volume baixo
       audio.play();
       musicBtn.textContent = "⏸ Pausar música";
     } else {
