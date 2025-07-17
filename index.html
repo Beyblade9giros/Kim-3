@@ -28,10 +28,74 @@
       overflow: hidden;
       color: #ddd;
     }
+    
+    /* Páginas da carta */
+    .page {
+      display: none;
+      min-height: 400px;
+      animation: slideIn 0.5s ease-in-out;
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(50px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .page-indicator {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+    .page-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #666;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .page-dot.active {
+      background-color: #e35d6a;
+    }
+    
+    .page-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .nav-btn {
+      background-color: #e35d6a;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    .nav-btn:hover {
+      background-color: #c94c56;
+    }
+    .nav-btn:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+    }
+    
     h1 {
       font-size: 28px;
       margin-bottom: 20px;
       color: inherit;
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #e35d6a;
     }
     p {
       font-size: 16px;
@@ -71,6 +135,48 @@
     button:hover {
       background-color: #c94c56;
     }
+    
+    /* Shake effect */
+    .shake-instruction {
+      background-color: #2a2b35;
+      border: 2px dashed #e35d6a;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      animation: breathe 2s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    /* Voice recognition */
+    .voice-section {
+      background-color: #2a2b35;
+      border: 2px solid #e35d6a;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .voice-btn {
+      background-color: #ff6b6b;
+      font-size: 18px;
+      padding: 15px 30px;
+      border-radius: 50px;
+      animation: voicePulse 2s infinite;
+    }
+    @keyframes voicePulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px #ff6b6b; }
+      50% { transform: scale(1.05); box-shadow: 0 0 30px #ff6b6b; }
+    }
+    .voice-status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ff9999;
+    }
+    
     /* Balões/corações animados */
     .heart {
       width: 20px;
@@ -121,6 +227,7 @@
       z-index: 1;
       pointer-events: none;
     }
+    
     /* Efeito carta aberta */
     #envelope {
       width: 280px;
@@ -158,6 +265,7 @@
     #envelope.open span {
       display: none;
     }
+    
     /* Máquina de escrever */
     .typewriter-text {
       border-right: 2px solid #e35d6a;
@@ -174,6 +282,7 @@
         border-color: transparent;
       }
     }
+    
     /* Estilo iframe do áudio mensagem */
     #audioMessage {
       margin-top: 30px;
@@ -192,12 +301,12 @@
       border: none;
       margin-top: 10px;
     }
-
     .audio-hint {
       color: #fff;
       font-size: 14px;
       margin-top: 5px;
     }
+    
     /* Responsividade mobile */
     @media (max-width: 768px) {
       .container {
@@ -207,6 +316,9 @@
       }
       h1 {
         font-size: 24px;
+      }
+      h2 {
+        font-size: 20px;
       }
       p {
         font-size: 15px;
@@ -224,6 +336,10 @@
         padding: 10px 20px;
         font-size: 14px;
         min-width: 100px;
+      }
+      .nav-btn {
+        padding: 8px 16px;
+        font-size: 12px;
       }
     }
   </style>
@@ -251,35 +367,81 @@
 
   <!-- Som de carta abrindo -->
   <audio id="envelope-sound" preload="auto">
-    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFA==" type="audio/wav" />
+    <source src="https://media.vocaroo.com/mp3/1m3PXZezscZ2" type="audio/mpeg" />
   </audio>
 
   <div class="container" id="mainContent" style="display:none;">
-    <h1>Carta de Amor para minha princesa</h1>
-
-    <p>Amor, eu quero que você saiba</p>
-
-    <p class="reveal" onclick="typeWriterEffect('text1')">o que eu sinto por você. (clique aqui)</p>
-    <p id="text1" class="hidden typewriter-text"></p>
-
-    <p class="reveal" onclick="typeWriterEffect('text2')">E não só isso. (clique aqui)</p>
-    <p id="text2" class="hidden typewriter-text"></p>
-
-    <div id="musicControl" style="margin-top: 15px;">
-      <button onclick="toggleMusic()" id="musicBtn">⏸ Pausar música</button>
+    
+    <!-- Página 1: Introdução -->
+    <div class="page active" id="page1">
+      <h1>Carta de Amor para minha princesa</h1>
+      <p>Amor, eu quero que você saiba</p>
+      <p class="reveal" onclick="typeWriterEffect('text1')">o que eu sinto por você. (clique aqui)</p>
+      <p id="text1" class="hidden typewriter-text"></p>
     </div>
 
-    <!-- Player áudio mensagem sua -->
-    <div id="audioMessage">
-      <div class="audio-hint">👇 Clique no play para ouvir minha voz</div>
-      <iframe
-        src="https://vocaroo.com/embed/1gZul3j0FpEA?autoplay=0"
-        allow="autoplay"
-        title="Mensagem de voz"
-      ></iframe>
+    <!-- Página 2: Shake para corações -->
+    <div class="page" id="page2">
+      <h2>Momento Especial 💕</h2>
+      <p class="reveal" onclick="typeWriterEffect('text2')">E não só isso. (clique aqui)</p>
+      <p id="text2" class="hidden typewriter-text"></p>
+      
+      <div class="shake-instruction">
+        <h3>📱 Balançe seu celular! 📱</h3>
+        <p>Agite suavemente para soltar corações especiais!</p>
+        <div id="shakeStatus" style="color: #e35d6a; font-weight: bold;">Aguardando movimento...</div>
+      </div>
     </div>
 
-    <button onclick="finalMessage()">Ver surpresa final</button>
+    <!-- Página 3: Reconhecimento de voz -->
+    <div class="page" id="page3">
+      <h2>Sua Voz é Mágica 🎤</h2>
+      <p>Sua voz é a melodia mais doce que já ouvi. Quero ouvir você dizer algo especial...</p>
+      
+      <div class="voice-section">
+        <button class="voice-btn" onclick="startVoiceRecognition()">🎤 Diga "Eu te amo"</button>
+        <div class="voice-status" id="voiceStatus">Toque no microfone e fale!</div>
+      </div>
+      
+      <div id="voiceSuccess" style="display:none; color: #e35d6a; font-size: 18px; margin-top: 20px;">
+        ✨ Sua voz é perfeita! Meu coração está acelerado! ✨
+      </div>
+    </div>
+
+    <!-- Página 4: Áudio e surpresa final -->
+    <div class="page" id="page4">
+      <h2>Mensagem Especial 💌</h2>
+      
+      <div id="musicControl" style="margin-bottom: 20px;">
+        <button onclick="toggleMusic()" id="musicBtn">⏸ Pausar música</button>
+      </div>
+
+      <!-- Player áudio mensagem sua -->
+      <div id="audioMessage">
+        <div class="audio-hint">👇 Clique no play para ouvir minha voz</div>
+        <div class="audio-hint" style="font-size: 12px; color: #ff9999; margin-top: 5px;">💡 Pause a música para ouvir melhor</div>
+        <iframe
+          src="https://vocaroo.com/embed/1gZul3j0FpEA?autoplay=0"
+          allow="autoplay"
+          title="Mensagem de voz"
+        ></iframe>
+      </div>
+
+      <button onclick="finalMessage()">Ver surpresa final</button>
+    </div>
+
+    <!-- Navegação entre páginas -->
+    <div class="page-navigation">
+      <button class="nav-btn" id="prevBtn" onclick="previousPage()" disabled>← Anterior</button>
+      <div class="page-indicator" id="pageIndicator">
+        <div class="page-dot active" onclick="goToPage(0)"></div>
+        <div class="page-dot" onclick="goToPage(1)"></div>
+        <div class="page-dot" onclick="goToPage(2)"></div>
+        <div class="page-dot" onclick="goToPage(3)"></div>
+      </div>
+      <button class="nav-btn" id="nextBtn" onclick="nextPage()">Próximo →</button>
+    </div>
+
   </div>
 
 <script>
@@ -290,16 +452,55 @@
   const mainContent = document.getElementById("mainContent");
   const envelope = document.getElementById("envelope");
 
+  let currentPage = 0;
+  const totalPages = 4;
+
   const texts = {
     text1: "Que cada vez que eu olho para você, meu coração bate mais forte e eu sinto uma felicidade indescritível. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.",
     text2: "Teus olhos brilham mais que uma supernova, seus cabelos perfeitos, seu sorriso perfeito. Eu não consigo descrever o quão incrível e especial você é para mim. Você é meu amor eterno."
   };
 
+  // Controle de páginas
+  function showPage(pageIndex) {
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.querySelectorAll('.page-dot').forEach(dot => dot.classList.remove('active'));
+    
+    document.getElementById(`page${pageIndex + 1}`).classList.add('active');
+    document.querySelectorAll('.page-dot')[pageIndex].classList.add('active');
+    
+    // Vibração suave ao trocar página
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+    
+    // Atualiza botões de navegação
+    document.getElementById('prevBtn').disabled = pageIndex === 0;
+    document.getElementById('nextBtn').disabled = pageIndex === totalPages - 1;
+    
+    currentPage = pageIndex;
+  }
+
+  function nextPage() {
+    if (currentPage < totalPages - 1) {
+      showPage(currentPage + 1);
+    }
+  }
+
+  function previousPage() {
+    if (currentPage > 0) {
+      showPage(currentPage - 1);
+    }
+  }
+
+  function goToPage(pageIndex) {
+    showPage(pageIndex);
+  }
+
   // Máquina de escrever com controle para não repetir animação
   const typedFlags = {};
 
   function typeWriterEffect(id) {
-    if (typedFlags[id]) return; // evita repetir
+    if (typedFlags[id]) return;
     typedFlags[id] = true;
 
     const el = document.getElementById(id);
@@ -307,7 +508,7 @@
     let i = 0;
     el.textContent = "";
     const text = texts[id];
-    const speed = 50; // ms por letra
+    const speed = 50;
 
     function type() {
       if (i < text.length) {
@@ -315,39 +516,44 @@
         i++;
         setTimeout(type, speed);
       } else {
-        // Remove o cursor piscando quando terminar
         setTimeout(() => {
           el.style.borderRight = "none";
         }, 1000);
+        
+        // Vibração ao terminar de escrever
+        if (navigator.vibrate) {
+          navigator.vibrate([100, 50, 100]);
+        }
       }
     }
     type();
   }
 
-  // Envelope abrindo com transição e mostra conteúdo + inicia música
+  // Envelope abrindo
   function openEnvelope() {
-    // Toca o som de carta abrindo (do segundo 2 ao 6)
-    envelopeSound.currentTime = 2; // Começa no segundo 2
+    envelopeSound.currentTime = 2;
     envelopeSound.play().catch(e => console.log("Erro ao tocar som:", e));
     
-    // Para o som no segundo 6
     setTimeout(() => {
       envelopeSound.pause();
-    }, 4000); // 4 segundos (do segundo 2 ao 6)
+    }, 4000);
     
     envelope.classList.add("open");
     envelope.querySelector("span").style.display = "none";
     const content = document.getElementById("envelopeContent");
     content.style.display = "block";
 
-    // Esconde tela de início após 1.5s para dar tempo de animação
+    // Vibração ao abrir envelope
+    if (navigator.vibrate) {
+      navigator.vibrate([200, 100, 200]);
+    }
+
     setTimeout(() => {
       startScreen.style.display = "none";
       mainContent.style.display = "block";
       createHearts();
-      audio.volume = 0.3; // Define volume da música de fundo para 30%
+      audio.volume = 0.3;
       audio.play().catch(() => {
-        // autoplay pode falhar se sem interação no navegador
         musicBtn.textContent = "⏵ Tocar música";
       });
     }, 1500);
@@ -355,7 +561,7 @@
 
   function toggleMusic() {
     if (audio.paused) {
-      audio.volume = 0.3; // Mantém volume baixo
+      audio.volume = 0.3;
       audio.play();
       musicBtn.textContent = "⏸ Pausar música";
     } else {
@@ -364,7 +570,112 @@
     }
   }
 
-  // Balões de coração subindo
+  // Shake detection
+  let shakeThreshold = 15;
+  let lastShake = 0;
+  
+  function handleShake() {
+    const now = Date.now();
+    if (now - lastShake > 1000) { // Evita spam
+      lastShake = now;
+      
+      // Vibração no shake
+      if (navigator.vibrate) {
+        navigator.vibrate(200);
+      }
+      
+      // Cria vários corações
+      for (let i = 0; i < 20; i++) {
+        setTimeout(() => createSpecialHeart(), i * 100);
+      }
+      
+      document.getElementById('shakeStatus').textContent = '💕 Que lindo! Mais corações para você! 💕';
+      setTimeout(() => {
+        document.getElementById('shakeStatus').textContent = 'Aguardando movimento...';
+      }, 3000);
+    }
+  }
+
+  // Detecta movimento do dispositivo
+  if (window.DeviceMotionEvent) {
+    window.addEventListener('devicemotion', function(event) {
+      const acceleration = event.accelerationIncludingGravity;
+      const x = acceleration.x;
+      const y = acceleration.y;
+      const z = acceleration.z;
+      
+      const accelerationMagnitude = Math.sqrt(x*x + y*y + z*z);
+      
+      if (accelerationMagnitude > shakeThreshold) {
+        handleShake();
+      }
+    });
+  }
+
+  // Reconhecimento de voz
+  function startVoiceRecognition() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      document.getElementById('voiceStatus').textContent = 'Seu navegador não suporta reconhecimento de voz';
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.lang = 'pt-BR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = function() {
+      document.getElementById('voiceStatus').textContent = '🎤 Ouvindo... Diga "Eu te amo"';
+      // Vibração ao iniciar
+      if (navigator.vibrate) {
+        navigator.vibrate(100);
+      }
+    };
+
+    recognition.onresult = function(event) {
+      const said = event.results[0][0].transcript.toLowerCase();
+      if (said.includes('eu te amo') || said.includes('te amo')) {
+        document.getElementById('voiceSuccess').style.display = 'block';
+        document.getElementById('voiceStatus').textContent = '✨ Perfeito! Eu também te amo! ✨';
+        
+        // Vibração de sucesso
+        if (navigator.vibrate) {
+          navigator.vibrate([100, 50, 100, 50, 100]);
+        }
+        
+        // Chuva de corações
+        for (let i = 0; i < 30; i++) {
+          setTimeout(() => createSpecialHeart(), i * 50);
+        }
+      } else {
+        document.getElementById('voiceStatus').textContent = 'Tente dizer "Eu te amo" mais claramente 💕';
+      }
+    };
+
+    recognition.onerror = function(event) {
+      document.getElementById('voiceStatus').textContent = 'Erro no reconhecimento. Tente novamente!';
+    };
+
+    recognition.start();
+  }
+
+  // Corações especiais para shake e voz
+  function createSpecialHeart() {
+    const heartsContainer = document.getElementById("hearts");
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.animationDuration = 3 + Math.random() * 3 + "s";
+    heart.style.opacity = 0.8 + Math.random() * 0.2;
+    heart.style.transform = `scale(${1 + Math.random() * 1.5}) rotate(45deg)`;
+    heart.style.background = `hsl(${Math.random() * 60 + 330}, 70%, 60%)`; // Tons de rosa/vermelho
+    heartsContainer.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+  }
+
+  // Balões de coração normais
   function createHearts() {
     const heartsContainer = document.getElementById("hearts");
     setInterval(() => {
@@ -376,7 +687,7 @@
       heart.style.transform = `scale(${0.5 + Math.random() * 1.2}) rotate(45deg)`;
       heartsContainer.appendChild(heart);
       setTimeout(() => heart.remove(), 10000);
-    }, 300);
+    }, 800);
   }
 
   function finalMessage() {
@@ -393,10 +704,15 @@
     function showNextMessage() {
       if (currentMessage < messages.length) {
         alert(messages[currentMessage]);
+        
+        // Vibração para cada mensagem
+        if (navigator.vibrate) {
+          navigator.vibrate([200, 100, 200]);
+        }
+        
         currentMessage++;
-        setTimeout(showNextMessage, 500);
+        setTimeout(showNextMessage, 800);
       } else {
-        // Criar confete de corações
         createConfetti();
       }
     }
@@ -415,15 +731,20 @@
         heart.style.animationDuration = 3 + Math.random() * 3 + "s";
         heart.style.opacity = 0.8 + Math.random() * 0.2;
         heart.style.transform = `scale(${0.8 + Math.random() * 1.5}) rotate(45deg)`;
+        heart.style.background = `hsl(${Math.random() * 60 + 330}, 80%, 60%)`;
         heartsContainer.appendChild(heart);
         setTimeout(() => heart.remove(), 6000);
       }, i * 100);
+    }
+    
+    // Vibração final épica
+    if (navigator.vibrate) {
+      navigator.vibrate([300, 100, 300, 100, 300]);
     }
   }
 
   // Otimizações para mobile
   document.addEventListener('DOMContentLoaded', function() {
-    // Previne zoom no duplo toque
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function (event) {
       const now = (new Date()).getTime();
