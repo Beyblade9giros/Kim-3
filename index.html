@@ -5,39 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Carta Interativa para Kimberlly</title>
   <style>
-    /* Reset básico */
     body {
-      background-color: #f7f7f7;
+      background-color: #12131a;
+      color: #ddd;
       font-family: 'Georgia', serif;
       margin: 0;
       padding: 0;
-      transition: background-color 0.5s ease, color 0.5s ease;
-      color: #555;
       min-height: 100vh;
       overflow-x: hidden;
-    }
-    body.night {
-      background-color: #12131a;
-      color: #ddd;
     }
     .container {
       width: 90%;
       max-width: 600px;
-      background-color: white;
+      background-color: #1f2028;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 30px #e35d6a;
       position: relative;
       z-index: 10;
       text-align: center;
       margin: 100px auto 50px;
       overflow: hidden;
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-    body.night .container {
-      background-color: #1f2028;
       color: #ddd;
-      box-shadow: 0 0 15px #e35d6a;
     }
     h1 {
       font-size: 36px;
@@ -51,8 +40,6 @@
       min-height: 48px;
       margin: 10px 0;
       white-space: pre-wrap;
-      /* para efeito máquina de escrever */
-      border-right: 2px solid transparent;
       overflow-wrap: break-word;
     }
     .hidden {
@@ -75,27 +62,6 @@
     }
     button:hover {
       background-color: #c94c56;
-    }
-    #startScreen {
-      z-index: 100;
-      background: white;
-      position: fixed;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      padding: 20px;
-      text-align: center;
-      overflow: hidden;
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-    body.night #startScreen {
-      background: #1f2028;
-      color: #ddd;
-    }
-    #musicControl {
-      margin-top: 20px;
     }
     /* Balões/corações animados */
     .heart {
@@ -168,6 +134,7 @@
       text-align: center;
       padding: 10px;
       margin-bottom: 20px;
+      z-index: 20;
     }
     #envelope.open {
       height: 300px;
@@ -190,30 +157,13 @@
       overflow: hidden;
       display: inline-block;
       animation: blink-caret 1s step-end infinite;
+      max-width: 100%;
+      word-break: break-word;
     }
     @keyframes blink-caret {
       50% {
         border-color: transparent;
       }
-    }
-    /* Botão modo noturno */
-    #toggleNightBtn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background-color: #e35d6a;
-      border: none;
-      color: white;
-      font-size: 16px;
-      padding: 10px 15px;
-      border-radius: 50px;
-      cursor: pointer;
-      z-index: 200;
-      box-shadow: 0 0 10px #e35d6a;
-      transition: background-color 0.3s ease;
-    }
-    #toggleNightBtn:hover {
-      background-color: #c94c56;
     }
     /* Estilo iframe do áudio mensagem */
     #audioMessage iframe {
@@ -228,8 +178,6 @@
 </head>
 <body>
 
-  <button id="toggleNightBtn" title="Alternar modo noturno">🌙</button>
-
   <!-- Corações subindo -->
   <div class="hearts-container" id="hearts"></div>
 
@@ -241,19 +189,18 @@
         <p>Minha princesa, prepare-se para uma surpresa inesquecível... 💖</p>
       </div>
     </div>
-    <button id="startBtn" style="display:none" onclick="startExperience()">Começar com música 🎶</button>
   </div>
 
   <!-- Música -->
   <audio id="bg-music" loop>
-    <source src="https://media.vocaroo.com/mp3/14Fdf6kOpJo9" type="audio/mpeg">
+    <source src="https://media.vocaroo.com/mp3/14Fdf6kOpJo9" type="audio/mpeg" />
     Seu navegador não suporta áudio.
   </audio>
 
   <div class="container" id="mainContent" style="display:none;">
     <h1>Carta de Amor para minha princesa</h1>
 
-    <p>Amor, eu quero que você saiba </p>
+    <p>Amor, eu quero que você saiba</p>
 
     <p class="reveal" onclick="typeWriterEffect('text1')">o que eu sinto por você. (clique na frase)</p>
     <p id="text1" class="hidden"></p>
@@ -263,8 +210,8 @@
 
     <button onclick="finalMessage()">Ver surpresa final</button>
 
-    <div id="musicControl">
-      <button onclick="toggleMusic()" id="musicBtn">⏵ Tocar música</button>
+    <div id="musicControl" style="margin-top: 15px;">
+      <button onclick="toggleMusic()" id="musicBtn">⏸ Pausar música</button>
     </div>
 
     <!-- Player áudio mensagem sua -->
@@ -291,18 +238,19 @@
   const startScreen = document.getElementById("startScreen");
   const mainContent = document.getElementById("mainContent");
   const envelope = document.getElementById("envelope");
-  const startBtn = document.getElementById("startBtn");
 
   const texts = {
-    text1: "Que cada vez que eu olho para você, meu coração bate mais forte e eu sinto uma felicidade indescritível. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.",
-    text2: "Teus olhos brilham mais que uma supernova, seus cabelos perfeitos, seu sorriso perfeito. Eu não consigo descrever o quão incrível e especial você é para mim. Você é meu amor eterno."
+    text1:
+      "Que cada vez que eu olho para você, meu coração bate mais forte e eu sinto uma felicidade indescritível. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.",
+    text2:
+      "Teus olhos brilham mais que uma supernova, seus cabelos perfeitos, seu sorriso perfeito. Eu não consigo descrever o quão incrível e especial você é para mim. Você é meu amor eterno.",
   };
 
   // Máquina de escrever com controle para não repetir animação
   const typedFlags = {};
 
   function typeWriterEffect(id) {
-    if(typedFlags[id]) return; // evita repetir
+    if (typedFlags[id]) return; // evita repetir
     typedFlags[id] = true;
 
     const el = document.getElementById(id);
@@ -317,38 +265,32 @@
         el.textContent += text.charAt(i);
         i++;
         setTimeout(type, speed);
-      } else {
-        el.classList.remove("typewriter-text");
       }
     }
-    el.classList.add("typewriter-text");
     type();
   }
 
-  // Envelope abrindo com transição e botão iniciar mostrando depois
+  // Envelope abrindo com transição e mostra conteúdo + inicia música
   function openEnvelope() {
     envelope.classList.add("open");
     envelope.querySelector("span").style.display = "none";
     const content = document.getElementById("envelopeContent");
     content.style.display = "block";
+
+    // Esconde tela de início após 1.2s para dar tempo de animação
     setTimeout(() => {
-      startBtn.style.display = "inline-block";
+      startScreen.style.display = "none";
+      mainContent.style.display = "block";
+      createHearts();
+      audio.play().catch(() => {
+        // autoplay pode falhar se sem interação no navegador
+        musicBtn.textContent = "⏵ Tocar música";
+      });
     }, 1200);
   }
 
-  function startExperience() {
-    startScreen.style.display = "none";
-    mainContent.style.display = "block";
-    createHearts();
-    audio.play().then(() => {
-      musicBtn.textContent = "⏸ Pausar música";
-    }).catch(() => {
-      musicBtn.textContent = "⏵ Tocar música";
-    });
-  }
-
   function toggleMusic() {
-    if(audio.paused) {
+    if (audio.paused) {
       audio.play();
       musicBtn.textContent = "⏸ Pausar música";
     } else {
@@ -365,24 +307,16 @@
       heart.classList.add("heart");
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.animationDuration = 5 + Math.random() * 5 + "s";
-      heart.style.opacity = Math.random();
+      heart.style.opacity = 0.6 + Math.random() * 0.4;
       heart.style.transform = `scale(${0.5 + Math.random() * 1.2}) rotate(45deg)`;
       heartsContainer.appendChild(heart);
       setTimeout(() => heart.remove(), 10000);
     }, 300);
   }
 
-  // Botão modo noturno
-  const toggleNightBtn = document.getElementById("toggleNightBtn");
-  toggleNightBtn.addEventListener("click", () => {
-    document.body.classList.toggle("night");
-    // Muda ícone do botão
-    if(document.body.classList.contains("night")) {
-      toggleNightBtn.textContent = "☀️";
-    } else {
-      toggleNightBtn.textContent = "🌙";
-    }
-  });
+  function finalMessage() {
+    alert("Eu te amo minha princesa. Feliz aniversário! 💖");
+  }
 </script>
 </body>
 </html>
