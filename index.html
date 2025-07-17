@@ -16,6 +16,7 @@
       height: 100vh;
       text-align: center;
       position: relative;
+      overflow: hidden;
     }
     .container {
       width: 80%;
@@ -57,12 +58,31 @@
     button:hover {
       background-color: #c94c56;
     }
-    #musicPlayer {
-      display: none;
+    #startScreen {
+      z-index: 10;
+      background: white;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
   </style>
 </head>
 <body>
+
+  <!-- Tela de entrada -->
+  <div id="startScreen">
+    <h2>Bem-vinda, minha princesa 💖</h2>
+    <button onclick="startExperience()">Clique para começar com música 🎶</button>
+  </div>
+
+  <!-- Música via tag <audio> -->
+  <audio id="bg-music" loop>
+    <source src="https://screenapp.io/api/video/share/audio/vZgPnq_nI7/audio.mp3" type="audio/mpeg">
+    Seu navegador não suporta áudio.
+  </audio>
 
   <div class="container" id="mainContent" style="display:none;">
     <h1>Carta de Amor para minha princesa</h1>
@@ -76,18 +96,6 @@
     <p class="hidden" id="text2">Teus olhos brilham mais que uma supernova, seus cabelos perfeitos, seu sorriso perfeito. Eu não consigo descrever o quão incrível e especial você é para mim. Você é meu amor eterno.</p>
     
     <button onclick="finalMessage()">Ver surpresa final</button>
-  </div>
-
-  <!-- Botão de entrada -->
-  <div id="startScreen">
-    <button onclick="startExperience()">Clique para começar com música 🎶</button>
-  </div>
-
-  <!-- YouTube player invisível -->
-  <div id="musicPlayer">
-    <iframe id="ytplayer" width="0" height="0" 
-      src="https://www.youtube.com/embed/Hzl8S4EXF4I?autoplay=1&loop=1&playlist=Hzl8S4EXF4I" 
-      frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
   </div>
 
   <script>
@@ -106,7 +114,8 @@
     function startExperience() {
       document.getElementById("startScreen").style.display = "none";
       document.getElementById("mainContent").style.display = "block";
-      document.getElementById("musicPlayer").style.display = "block";
+      const audio = document.getElementById("bg-music");
+      audio.play();
     }
   </script>
 
