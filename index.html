@@ -2,37 +2,58 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Carta Interativa para Kimberlly</title>
   <style>
+    /* Reset básico */
     body {
       background-color: #f7f7f7;
       font-family: 'Georgia', serif;
       margin: 0;
       padding: 0;
-      overflow: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      color: #555;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body.night {
+      background-color: #12131a;
+      color: #ddd;
     }
     .container {
-      width: 80%;
+      width: 90%;
       max-width: 600px;
       background-color: white;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       position: relative;
       z-index: 10;
       text-align: center;
-      margin: 100px auto;
+      margin: 100px auto 50px;
+      overflow: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    body.night .container {
+      background-color: #1f2028;
+      color: #ddd;
+      box-shadow: 0 0 15px #e35d6a;
     }
     h1 {
-      color: #2b2b2b;
       font-size: 36px;
       margin-bottom: 20px;
+      color: inherit;
     }
     p {
       font-size: 18px;
-      color: #555;
       line-height: 1.6;
+      color: inherit;
+      min-height: 48px;
+      margin: 10px 0;
+      white-space: pre-wrap;
+      /* para efeito máquina de escrever */
+      border-right: 2px solid transparent;
+      overflow-wrap: break-word;
     }
     .hidden {
       display: none;
@@ -64,12 +85,19 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      padding: 20px;
+      text-align: center;
+      overflow: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+    body.night #startScreen {
+      background: #1f2028;
+      color: #ddd;
     }
     #musicControl {
       margin-top: 20px;
     }
-
-    /* Corações animados */
+    /* Balões/corações animados */
     .heart {
       width: 20px;
       height: 20px;
@@ -80,8 +108,8 @@
       transform: translateX(-50%) rotate(45deg);
       animation: float 10s linear infinite;
       opacity: 0.6;
+      filter: drop-shadow(0 0 1px #e35d6a);
     }
-
     .heart::before,
     .heart::after {
       content: "";
@@ -91,28 +119,24 @@
       position: absolute;
       border-radius: 50%;
     }
-
     .heart::before {
       top: -10px;
       left: 0;
     }
-
     .heart::after {
       left: 10px;
       top: 0;
     }
-
     @keyframes float {
       0% {
-        transform: translateX(0) translateY(0) rotate(45deg);
+        transform: translateY(0) rotate(45deg);
         opacity: 0.6;
       }
       100% {
-        transform: translateX(0) translateY(-120vh) rotate(45deg);
+        transform: translateY(-120vh) rotate(45deg);
         opacity: 0;
       }
     }
-
     .hearts-container {
       position: fixed;
       top: 0;
@@ -123,17 +147,101 @@
       z-index: 1;
       pointer-events: none;
     }
+    /* Efeito carta aberta */
+    #envelope {
+      width: 250px;
+      height: 180px;
+      background: #e35d6a;
+      border-radius: 15px 15px 50% 50% / 50% 50% 70% 70%;
+      position: relative;
+      cursor: pointer;
+      transition: transform 1s ease;
+      box-shadow: 0 0 15px #e35d6a;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      user-select: none;
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    #envelope.open {
+      height: 300px;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 0 50px #e35d6a;
+      color: #2b2b2b;
+      font-size: 16px;
+      padding: 20px;
+      cursor: default;
+      transition: height 1s ease, border-radius 1s ease, background 1s ease, box-shadow 1s ease;
+    }
+    #envelope.open span {
+      display: none;
+    }
+    /* Máquina de escrever */
+    .typewriter-text {
+      border-right: 2px solid #e35d6a;
+      white-space: nowrap;
+      overflow: hidden;
+      display: inline-block;
+      animation: blink-caret 1s step-end infinite;
+    }
+    @keyframes blink-caret {
+      50% {
+        border-color: transparent;
+      }
+    }
+    /* Botão modo noturno */
+    #toggleNightBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #e35d6a;
+      border: none;
+      color: white;
+      font-size: 16px;
+      padding: 10px 15px;
+      border-radius: 50px;
+      cursor: pointer;
+      z-index: 200;
+      box-shadow: 0 0 10px #e35d6a;
+      transition: background-color 0.3s ease;
+    }
+    #toggleNightBtn:hover {
+      background-color: #c94c56;
+    }
+    /* Estilo iframe do áudio mensagem */
+    #audioMessage iframe {
+      border-radius: 8px;
+      box-shadow: 0 0 10px #e35d6a;
+      width: 300px;
+      height: 60px;
+      border: none;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Balões de coração -->
+  <button id="toggleNightBtn" title="Alternar modo noturno">🌙</button>
+
+  <!-- Corações subindo -->
   <div class="hearts-container" id="hearts"></div>
 
-  <!-- Tela de entrada -->
+  <!-- Tela de entrada com envelope -->
   <div id="startScreen">
-    <h2>Bem-vinda, minha princesa 💖</h2>
-    <button onclick="startExperience()">Clique para começar 🎶</button>
+    <div id="envelope" onclick="openEnvelope()" title="Clique para abrir a carta">
+      <span>Clique para abrir sua carta 💌</span>
+      <div id="envelopeContent" style="display:none; padding-top:10px;">
+        <p>Minha princesa, prepare-se para uma surpresa inesquecível... 💖</p>
+      </div>
+    </div>
+    <button id="startBtn" style="display:none" onclick="startExperience()">Começar com música 🎶</button>
   </div>
 
   <!-- Música -->
@@ -144,75 +252,137 @@
 
   <div class="container" id="mainContent" style="display:none;">
     <h1>Carta de Amor para minha princesa</h1>
-    
+
     <p>Amor, eu quero que você saiba </p>
-    
-    <p class="reveal" onclick="revealText()">o que eu sinto por você. (clique na frase)</p>
-    <p class="hidden" id="text1">Que cada vez que eu olho para você, meu coração bate mais forte e eu sinto uma felicidade indescritível. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.</p>
-    
-    <p class="reveal" onclick="revealText2()">E não só isso. (clique na frase)</p>
-    <p class="hidden" id="text2">Teus olhos brilham mais que uma supernova, seus cabelos perfeitos, seu sorriso perfeito. Eu não consigo descrever o quão incrível e especial você é para mim. Você é meu amor eterno.</p>
-    
+
+    <p class="reveal" onclick="typeWriterEffect('text1')">o que eu sinto por você. (clique na frase)</p>
+    <p id="text1" class="hidden"></p>
+
+    <p class="reveal" onclick="typeWriterEffect('text2')">E não só isso. (clique na frase)</p>
+    <p id="text2" class="hidden"></p>
+
     <button onclick="finalMessage()">Ver surpresa final</button>
+
     <div id="musicControl">
       <button onclick="toggleMusic()" id="musicBtn">⏵ Tocar música</button>
     </div>
+
+    <!-- Player áudio mensagem sua -->
+    <div id="audioMessage">
+      <iframe
+        src="https://vocaroo.com/embed/1gZul3j0FpEA?autoplay=0"
+        allow="autoplay"
+        title="Mensagem de voz"
+      ></iframe>
+      <br />
+      <a
+        href="https://voca.ro/1gZul3j0FpEA"
+        title="Gravador de Voz do Vocaroo"
+        target="_blank"
+        style="color: #e35d6a; text-decoration: none; font-weight: bold; font-family: Georgia, serif;"
+        >Ver no Vocaroo &gt;&gt;</a
+      >
+    </div>
   </div>
 
-  <script>
-    const audio = document.getElementById("bg-music");
-    const musicBtn = document.getElementById("musicBtn");
+<script>
+  const audio = document.getElementById("bg-music");
+  const musicBtn = document.getElementById("musicBtn");
+  const startScreen = document.getElementById("startScreen");
+  const mainContent = document.getElementById("mainContent");
+  const envelope = document.getElementById("envelope");
+  const startBtn = document.getElementById("startBtn");
 
-    function revealText() {
-      document.getElementById("text1").classList.remove("hidden");
-    }
+  const texts = {
+    text1: "Que cada vez que eu olho para você, meu coração bate mais forte e eu sinto uma felicidade indescritível. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.",
+    text2: "Teus olhos brilham mais que uma supernova, seus cabelos perfeitos, seu sorriso perfeito. Eu não consigo descrever o quão incrível e especial você é para mim. Você é meu amor eterno."
+  };
 
-    function revealText2() {
-      document.getElementById("text2").classList.remove("hidden");
-    }
+  // Máquina de escrever com controle para não repetir animação
+  const typedFlags = {};
 
-    function finalMessage() {
-      alert("Eu te amo minha princesa. Feliz aniversário! 💖");
-    }
+  function typeWriterEffect(id) {
+    if(typedFlags[id]) return; // evita repetir
+    typedFlags[id] = true;
 
-    function startExperience() {
-      document.getElementById("startScreen").style.display = "none";
-      document.getElementById("mainContent").style.display = "block";
-      createHearts();
+    const el = document.getElementById(id);
+    el.classList.remove("hidden");
+    let i = 0;
+    el.textContent = "";
+    const text = texts[id];
+    const speed = 40; // ms por letra
 
-      // Tocar música
-      audio.play().then(() => {
-        musicBtn.textContent = "⏸ Pausar música";
-      }).catch(() => {
-        musicBtn.textContent = "⏵ Tocar música";
-      });
-    }
-
-    function toggleMusic() {
-      if (audio.paused) {
-        audio.play();
-        musicBtn.textContent = "⏸ Pausar música";
+    function type() {
+      if (i < text.length) {
+        el.textContent += text.charAt(i);
+        i++;
+        setTimeout(type, speed);
       } else {
-        audio.pause();
-        musicBtn.textContent = "⏵ Tocar música";
+        el.classList.remove("typewriter-text");
       }
     }
+    el.classList.add("typewriter-text");
+    type();
+  }
 
-    // Corações animados subindo
-    function createHearts() {
-      const heartsContainer = document.getElementById("hearts");
-      setInterval(() => {
-        const heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = 5 + Math.random() * 5 + "s";
-        heart.style.opacity = Math.random();
-        heart.style.transform = `scale(${0.5 + Math.random() * 1.2}) rotate(45deg)`;
-        heartsContainer.appendChild(heart);
-        setTimeout(() => heart.remove(), 10000);
-      }, 300);
+  // Envelope abrindo com transição e botão iniciar mostrando depois
+  function openEnvelope() {
+    envelope.classList.add("open");
+    envelope.querySelector("span").style.display = "none";
+    const content = document.getElementById("envelopeContent");
+    content.style.display = "block";
+    setTimeout(() => {
+      startBtn.style.display = "inline-block";
+    }, 1200);
+  }
+
+  function startExperience() {
+    startScreen.style.display = "none";
+    mainContent.style.display = "block";
+    createHearts();
+    audio.play().then(() => {
+      musicBtn.textContent = "⏸ Pausar música";
+    }).catch(() => {
+      musicBtn.textContent = "⏵ Tocar música";
+    });
+  }
+
+  function toggleMusic() {
+    if(audio.paused) {
+      audio.play();
+      musicBtn.textContent = "⏸ Pausar música";
+    } else {
+      audio.pause();
+      musicBtn.textContent = "⏵ Tocar música";
     }
-  </script>
+  }
 
+  // Balões de coração subindo
+  function createHearts() {
+    const heartsContainer = document.getElementById("hearts");
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 5 + Math.random() * 5 + "s";
+      heart.style.opacity = Math.random();
+      heart.style.transform = `scale(${0.5 + Math.random() * 1.2}) rotate(45deg)`;
+      heartsContainer.appendChild(heart);
+      setTimeout(() => heart.remove(), 10000);
+    }, 300);
+  }
+
+  // Botão modo noturno
+  const toggleNightBtn = document.getElementById("toggleNightBtn");
+  toggleNightBtn.addEventListener("click", () => {
+    document.body.classList.toggle("night");
+    // Muda ícone do botão
+    if(document.body.classList.contains("night")) {
+      toggleNightBtn.textContent = "☀️";
+    } else {
+      toggleNightBtn.textContent = "🌙";
+    }
+  });
+</script>
 </body>
 </html>
