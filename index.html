@@ -24,41 +24,49 @@
       position: relative;
       z-index: 10;
       text-align: center;
-      margin: 100px auto 50px;
+      margin: 50px auto;
       overflow: hidden;
       color: #ddd;
     }
     h1 {
-      font-size: 36px;
+      font-size: 28px;
       margin-bottom: 20px;
       color: inherit;
     }
     p {
-      font-size: 18px;
+      font-size: 16px;
       line-height: 1.6;
       color: inherit;
-      min-height: 48px;
-      margin: 10px 0;
+      margin: 15px 0;
       white-space: pre-wrap;
       overflow-wrap: break-word;
     }
     .hidden {
       display: none;
     }
-    .reveal:hover {
+    .reveal {
       color: #e35d6a;
       cursor: pointer;
+      text-decoration: underline;
+      animation: pulse 2s infinite;
+      font-weight: bold;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; }
+      100% { opacity: 0.7; }
     }
     button {
       background-color: #e35d6a;
       color: white;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border: none;
       font-size: 16px;
       border-radius: 5px;
       cursor: pointer;
-      margin-top: 20px;
+      margin: 20px 10px;
       transition: background-color 0.3s ease;
+      min-width: 120px;
     }
     button:hover {
       background-color: #c94c56;
@@ -115,8 +123,8 @@
     }
     /* Efeito carta aberta */
     #envelope {
-      width: 250px;
-      height: 180px;
+      width: 280px;
+      height: 200px;
       background: #e35d6a;
       border-radius: 15px 15px 50% 50% / 50% 50% 70% 70%;
       position: relative;
@@ -129,15 +137,15 @@
       align-items: center;
       color: white;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
       user-select: none;
       text-align: center;
       padding: 10px;
-      margin-bottom: 20px;
+      margin: 100px auto 20px;
       z-index: 20;
     }
     #envelope.open {
-      height: 300px;
+      height: 320px;
       border-radius: 10px;
       background: white;
       box-shadow: 0 0 50px #e35d6a;
@@ -153,12 +161,13 @@
     /* Máquina de escrever */
     .typewriter-text {
       border-right: 2px solid #e35d6a;
-      white-space: nowrap;
-      overflow: hidden;
-      display: inline-block;
+      white-space: pre-wrap;
+      overflow: visible;
+      display: block;
       animation: blink-caret 1s step-end infinite;
       max-width: 100%;
       word-break: break-word;
+      min-height: auto;
     }
     @keyframes blink-caret {
       50% {
@@ -166,13 +175,66 @@
       }
     }
     /* Estilo iframe do áudio mensagem */
+    #audioMessage {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #2a2b35;
+      border-radius: 10px;
+      border: 2px solid #e35d6a;
+      position: relative;
+    }
     #audioMessage iframe {
       border-radius: 8px;
       box-shadow: 0 0 10px #e35d6a;
-      width: 300px;
+      width: 100%;
+      max-width: 300px;
       height: 60px;
       border: none;
-      margin-top: 20px;
+      margin-top: 10px;
+    }
+    .audio-instruction {
+      color: #e35d6a;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #e35d6a; }
+      to { text-shadow: 0 0 20px #e35d6a, 0 0 30px #e35d6a; }
+    }
+    .audio-hint {
+      color: #fff;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    /* Responsividade mobile */
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+        padding: 15px;
+        margin: 20px auto;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      p {
+        font-size: 15px;
+      }
+      #envelope {
+        width: 250px;
+        height: 180px;
+        font-size: 16px;
+        margin: 50px auto 20px;
+      }
+      #envelope.open {
+        height: 280px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 14px;
+        min-width: 100px;
+      }
     }
   </style>
 </head>
@@ -197,16 +259,21 @@
     Seu navegador não suporta áudio.
   </audio>
 
+  <!-- Som de carta abrindo -->
+  <audio id="envelope-sound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBkiU3PXKSDMUKYLN8t2JOwcZZLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFA==" type="audio/wav" />
+  </audio>
+
   <div class="container" id="mainContent" style="display:none;">
     <h1>Carta de Amor para minha princesa</h1>
 
     <p>Amor, eu quero que você saiba</p>
 
-    <p class="reveal" onclick="typeWriterEffect('text1')">o que eu sinto por você. (clique na frase)</p>
-    <p id="text1" class="hidden"></p>
+    <p class="reveal" onclick="typeWriterEffect('text1')">o que eu sinto por você. (clique aqui)</p>
+    <p id="text1" class="hidden typewriter-text"></p>
 
-    <p class="reveal" onclick="typeWriterEffect('text2')">E não só isso. (clique na frase)</p>
-    <p id="text2" class="hidden"></p>
+    <p class="reveal" onclick="typeWriterEffect('text2')">E não só isso. (clique aqui)</p>
+    <p id="text2" class="hidden typewriter-text"></p>
 
     <button onclick="finalMessage()">Ver surpresa final</button>
 
@@ -216,34 +283,27 @@
 
     <!-- Player áudio mensagem sua -->
     <div id="audioMessage">
+      <div class="audio-instruction">🎧 Toque aqui para ouvir uma mensagem especial! 🎧</div>
+      <div class="audio-hint">👆 Clique no play para ouvir minha voz</div>
       <iframe
         src="https://vocaroo.com/embed/1gZul3j0FpEA?autoplay=0"
         allow="autoplay"
         title="Mensagem de voz"
       ></iframe>
-      <br />
-      <a
-        href="https://voca.ro/1gZul3j0FpEA"
-        title="Gravador de Voz do Vocaroo"
-        target="_blank"
-        style="color: #e35d6a; text-decoration: none; font-weight: bold; font-family: Georgia, serif;"
-        >Ver no Vocaroo &gt;&gt;</a
-      >
     </div>
   </div>
 
 <script>
   const audio = document.getElementById("bg-music");
+  const envelopeSound = document.getElementById("envelope-sound");
   const musicBtn = document.getElementById("musicBtn");
   const startScreen = document.getElementById("startScreen");
   const mainContent = document.getElementById("mainContent");
   const envelope = document.getElementById("envelope");
 
   const texts = {
-    text1:
-      "Que cada vez que eu olho para você, meu coração bate mais forte e eu sinto uma felicidade indescritível. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.",
-    text2:
-      "Teus olhos brilham mais que uma supernova, seus cabelos perfeitos, seu sorriso perfeito. Eu não consigo descrever o quão incrível e especial você é para mim. Você é meu amor eterno.",
+    text1: "Que cada vez que eu olho para você, meu coração bate mais forte e eu sinto uma felicidade indescritível. Você tem a magia de iluminar meu dia e de fazer qualquer momento se tornar inesquecível.",
+    text2: "Teus olhos brilham mais que uma supernova, seus cabelos perfeitos, seu sorriso perfeito. Eu não consigo descrever o quão incrível e especial você é para mim. Você é meu amor eterno."
   };
 
   // Máquina de escrever com controle para não repetir animação
@@ -258,13 +318,18 @@
     let i = 0;
     el.textContent = "";
     const text = texts[id];
-    const speed = 40; // ms por letra
+    const speed = 50; // ms por letra
 
     function type() {
       if (i < text.length) {
         el.textContent += text.charAt(i);
         i++;
         setTimeout(type, speed);
+      } else {
+        // Remove o cursor piscando quando terminar
+        setTimeout(() => {
+          el.style.borderRight = "none";
+        }, 1000);
       }
     }
     type();
@@ -272,12 +337,15 @@
 
   // Envelope abrindo com transição e mostra conteúdo + inicia música
   function openEnvelope() {
+    // Toca o som de carta abrindo
+    envelopeSound.play().catch(e => console.log("Erro ao tocar som:", e));
+    
     envelope.classList.add("open");
     envelope.querySelector("span").style.display = "none";
     const content = document.getElementById("envelopeContent");
     content.style.display = "block";
 
-    // Esconde tela de início após 1.2s para dar tempo de animação
+    // Esconde tela de início após 1.5s para dar tempo de animação
     setTimeout(() => {
       startScreen.style.display = "none";
       mainContent.style.display = "block";
@@ -286,7 +354,7 @@
         // autoplay pode falhar se sem interação no navegador
         musicBtn.textContent = "⏵ Tocar música";
       });
-    }, 1200);
+    }, 1500);
   }
 
   function toggleMusic() {
@@ -315,8 +383,59 @@
   }
 
   function finalMessage() {
-    alert("Eu te amo minha princesa. Feliz aniversário! 💖");
+    const messages = [
+      "Eu te amo minha princesa! 💖",
+      "Feliz aniversário, meu amor! 🎂",
+      "Você é a razão do meu sorriso todos os dias! 😊",
+      "Que este novo ano da sua vida seja cheio de alegrias! 🌟",
+      "Obrigado por existir e fazer minha vida mais feliz! 💕"
+    ];
+    
+    let currentMessage = 0;
+    
+    function showNextMessage() {
+      if (currentMessage < messages.length) {
+        alert(messages[currentMessage]);
+        currentMessage++;
+        setTimeout(showNextMessage, 500);
+      } else {
+        // Criar confete de corações
+        createConfetti();
+      }
+    }
+    
+    showNextMessage();
   }
+
+  // Função para criar confete de corações
+  function createConfetti() {
+    const heartsContainer = document.getElementById("hearts");
+    for (let i = 0; i < 50; i++) {
+      setTimeout(() => {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = 3 + Math.random() * 3 + "s";
+        heart.style.opacity = 0.8 + Math.random() * 0.2;
+        heart.style.transform = `scale(${0.8 + Math.random() * 1.5}) rotate(45deg)`;
+        heartsContainer.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }, i * 100);
+    }
+  }
+
+  // Otimizações para mobile
+  document.addEventListener('DOMContentLoaded', function() {
+    // Previne zoom no duplo toque
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+  });
 </script>
 </body>
 </html>
